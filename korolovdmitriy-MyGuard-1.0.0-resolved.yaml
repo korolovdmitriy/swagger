@@ -1,0 +1,448 @@
+---
+swagger: "2.0"
+info:
+  description: This is a simple API
+  version: 1.0.0
+  title: My guard API
+host: localhost:3000
+basePath: /
+tags:
+- name: Users
+  description: Data base of users
+- name: Crimes
+  description: Data base of crimes
+- name: Police stations
+  description: Data base of police stations
+schemes:
+- http
+- https
+paths:
+  /users:
+    get:
+      tags:
+      - Users
+      summary: get all users
+      description: Get all users from the system
+      parameters: []
+      responses:
+        "200":
+          description: Get all users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+    post:
+      tags:
+      - Users
+      summary: adds user
+      description: Adds user to the system
+      parameters:
+      - in: body
+        name: User
+        description: User to add
+        required: false
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        "201":
+          description: user created
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: an existing user already exists
+  /users/{id}:
+    get:
+      tags:
+      - Users
+      summary: get user by id
+      description: Get user from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Get user by id
+          schema:
+            $ref: '#/definitions/User'
+    delete:
+      tags:
+      - Users
+      summary: delete user by id
+      description: Deletes user from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: user deleted
+    patch:
+      tags:
+      - Users
+      summary: change user by id
+      description: Change user from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: User
+        description: User to update
+        required: false
+        schema:
+          $ref: '#/definitions/User'
+      responses:
+        "200":
+          description: user update
+  /users/{id}/crimes:
+    get:
+      tags:
+      - Users
+      summary: get all crimes by user id
+      description: Get all crimes by user id
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: Crime
+        description: Crime item to add
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/Crime'
+      responses:
+        "201":
+          description: item created
+    post:
+      tags:
+      - Users
+      summary: adds an crime item
+      description: Adds an item to the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: Crime
+        description: Crime item to add
+        required: false
+        schema:
+          $ref: '#/definitions/Crime'
+      responses:
+        "201":
+          description: item created
+  /crimes:
+    get:
+      tags:
+      - Crimes
+      summary: get full criminal situation info
+      description: Get full criminal situation info
+      parameters:
+      - name: userId
+        in: query
+        description: Get all crimes by user ID
+        required: false
+        type: integer
+      - name: stationId
+        in: query
+        description: Get all crimes by station ID
+        required: false
+        type: integer
+      - name: query
+        in: query
+        description: Find by keyword
+        required: false
+        type: string
+      - name: sortBy
+        in: query
+        description: Sort all crimes by
+        required: false
+        type: string
+        enum:
+        - name
+        - rate
+        - date
+      - name: sortOrder
+        in: query
+        description: Sort all crimes by order
+        required: false
+        type: string
+        enum:
+        - asc
+        - desc
+      - name: offset
+        in: query
+        description: Offset in result array for pagination
+        required: false
+        type: string
+      - name: limit
+        in: query
+        description: Limit amount of items in result array for pagination
+        required: false
+        type: string
+      responses:
+        "200":
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Crime'
+        "400":
+          description: bad input parameter
+    post:
+      tags:
+      - Crimes
+      summary: adds an crime item
+      description: Adds an item to the system
+      parameters:
+      - in: body
+        name: Crime
+        description: Crime item to add
+        required: false
+        schema:
+          $ref: '#/definitions/Crime'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: an existing item already exists
+  /crimes/{id}:
+    get:
+      tags:
+      - Crimes
+      summary: get crime by id
+      description: Get crime from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Get crime by id
+          schema:
+            $ref: '#/definitions/Crime'
+    patch:
+      tags:
+      - Crimes
+      summary: change crime by id
+      description: Change crime from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: User
+        description: Crime to update
+        required: false
+        schema:
+          $ref: '#/definitions/Crime'
+      responses:
+        "200":
+          description: crime update
+  /policeStations:
+    get:
+      tags:
+      - Police stations
+      summary: get all police station locations info
+      description: Get police station locations
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Station'
+        "400":
+          description: bad input parameter
+    post:
+      tags:
+      - Police stations
+      summary: adds police station
+      description: Adds police station
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: Police station
+        description: Police station to add
+        required: false
+        schema:
+          $ref: '#/definitions/Station'
+      responses:
+        "201":
+          description: Police station created
+        "400":
+          description: invalid input, object invalid
+        "409":
+          description: an existing item already exists
+  /policeStations/{id}:
+    get:
+      tags:
+      - Police stations
+      summary: get police station by id
+      description: Get police station from the system
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Get police station by id
+          schema:
+            $ref: '#/definitions/Station'
+    delete:
+      tags:
+      - Police stations
+      summary: delete police stations by id
+      description: Delete police stations from the system
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: user deleted
+    patch:
+      tags:
+      - Police stations
+      summary: change police station by id
+      description: Change police station from the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: User
+        description: Police station to update
+        required: false
+        schema:
+          $ref: '#/definitions/Station'
+      responses:
+        "200":
+          description: Police station update
+  /policeStations/{id}/crimes:
+    get:
+      tags:
+      - Police stations
+      summary: get all crimes by police station id
+      description: Get all crimes by police station id from the system
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Get police station by id
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Crime'
+  /policeStations/{id}/chekCrimes:
+    get:
+      tags:
+      - Police stations
+      summary: check crimes
+      description: Check crimes
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Get police station by id
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Crime'
+definitions:
+  User:
+    type: object
+    required:
+    - id
+    - name
+    properties:
+      id:
+        type: number
+        example: 3.0
+      name:
+        type: string
+        example: Ivan
+  Crime:
+    type: object
+    required:
+    - date
+    - id
+    - name
+    - policeStationId
+    - rate
+    - status
+    - userId
+    properties:
+      id:
+        type: number
+        example: 333.0
+      userId:
+        type: number
+        example: 456.0
+      policeStationId:
+        type: number
+        example: 556.0
+      status:
+        type: string
+        example: active
+      name:
+        type: string
+        example: Car theft
+      date:
+        type: string
+        format: date-time
+        example: 2016-08-29T09:12:33.001Z
+      rate:
+        type: number
+        example: 8.0
+  Station:
+    type: object
+    required:
+    - id
+    - location
+    properties:
+      id:
+        type: number
+        example: 125.0
+      location:
+        type: string
+        example: Kiev, st. Freedom
