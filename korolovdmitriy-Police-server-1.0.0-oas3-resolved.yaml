@@ -1,0 +1,213 @@
+---
+openapi: 3.0.0
+info:
+  title: Police API service documentation
+  version: 1.0.0-oas3
+servers:
+- url: https://police-app-server.herokuapp.com
+tags:
+- name: Police stations
+  description: Data base of police stations
+paths:
+  /policeStations:
+    get:
+      tags:
+      - Police stations
+      summary: Get all police station locations info (police only)
+      description: Get police station locations
+      responses:
+        "200":
+          description: search results matching criteria
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Station'
+        "400":
+          description: bad input parameter
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - Police stations
+      summary: Adds police station (police only)
+      description: Adds police station
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Station'
+        required: true
+      responses:
+        "201":
+          description: Police station created
+        "400":
+          description: Invalid input, object invalid
+        "409":
+          description: An existing item already exists
+      security:
+      - bearerAuth: []
+  /policeStations/{id}:
+    get:
+      tags:
+      - Police stations
+      summary: Get police station by id (police only)
+      description: Get police station from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Get police station by id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Station'
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - Police stations
+      summary: Delete police stations by id (police only)
+      description: Delete police stations from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Police station deleted
+      security:
+      - bearerAuth: []
+    patch:
+      tags:
+      - Police stations
+      summary: Change police station by id (police only)
+      description: Change police station from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Station'
+        required: true
+      responses:
+        "200":
+          description: Police station update
+      security:
+      - bearerAuth: []
+  /policeStations/{id}/crimes:
+    get:
+      tags:
+      - Police stations
+      summary: Get all crimes by police station id (police only)
+      description: Get all crimes by police station id from the system
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Get police station by id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Crime'
+      security:
+      - bearerAuth: []
+  /policeStations/{id}/chekCrimes:
+    get:
+      tags:
+      - Police stations
+      summary: Check crimes (police only)
+      description: Check crimes
+      parameters:
+      - name: id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      responses:
+        "200":
+          description: Get police station by id
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Crime'
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    Crime:
+      required:
+      - date
+      - id
+      - name
+      - policeStationId
+      - rate
+      - status
+      - userId
+      type: object
+      properties:
+        id:
+          type: number
+        userId:
+          type: number
+        policeStationId:
+          type: number
+        status:
+          type: string
+          example: active
+        name:
+          type: string
+          example: Car theft
+        date:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+        rate:
+          type: number
+          example: 8
+    Station:
+      required:
+      - id
+      - location
+      type: object
+      properties:
+        id:
+          type: number
+        location:
+          type: string
+          example: Kiev, st. Freedom
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
