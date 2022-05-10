@@ -1,0 +1,283 @@
+---
+swagger: "2.0"
+info:
+  version: "2.0"
+  title: Police API service documentation
+host: police-app-server.herokuapp.com
+basePath: /
+tags:
+- name: Police stations
+  description: Data base of police stations
+schemes:
+- https
+paths:
+  /police-stations:
+    get:
+      tags:
+      - Police stations
+      summary: Get all police station locations info
+      description: Get police station locations
+      parameters: []
+      security:
+      - OAuth2:
+        - police
+        - user
+      responses:
+        "200":
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Station'
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized
+        "403":
+          description: Access denied
+        "500":
+          description: Unexpected error
+    post:
+      tags:
+      - Police stations
+      summary: Adds police station
+      description: Adds police station
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: Police station
+        description: Police station to add
+        required: false
+        schema:
+          $ref: '#/definitions/Station'
+      security:
+      - OAuth2:
+        - police
+      responses:
+        "200":
+          description: The police station was successfully created
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized
+        "403":
+          description: Access denied
+        "500":
+          description: Unexpected error
+  /police-stations/{id}:
+    get:
+      tags:
+      - Police stations
+      summary: Get police station by id
+      description: Get police station from the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      security:
+      - OAuth2:
+        - police
+      responses:
+        "200":
+          description: Get police station by id
+          schema:
+            $ref: '#/definitions/Station'
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized
+        "403":
+          description: Access denied
+        "500":
+          description: Unexpected error
+    delete:
+      tags:
+      - Police stations
+      summary: Delete police stations by id
+      description: Delete police stations from the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      security:
+      - OAuth2:
+        - police
+      responses:
+        "200":
+          description: The police station was deleted
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized
+        "403":
+          description: Access denied
+        "500":
+          description: Unexpected error
+    patch:
+      tags:
+      - Police stations
+      summary: Update police station by id
+      description: Change police station from the system
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: User
+        description: Police station to update
+        required: false
+        schema:
+          $ref: '#/definitions/Station'
+      security:
+      - OAuth2:
+        - police
+      responses:
+        "200":
+          description: The police station was updated
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized
+        "403":
+          description: Access denied
+        "500":
+          description: Unexpected error
+  /police-stations/{id}/crimes:
+    get:
+      tags:
+      - Police stations
+      summary: Get all crimes by police station id
+      description: Get all crimes by police station id
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      security:
+      - OAuth2:
+        - police
+      responses:
+        "200":
+          description: Crimes by police station id
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Crime'
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized
+        "403":
+          description: Access denied
+        "500":
+          description: Unexpected error
+  /policeStations/{id}/chek-crimes:
+    get:
+      tags:
+      - Police stations
+      summary: Check all crimes by police station id
+      description: Check crimes
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      security:
+      - OAuth2:
+        - police
+      responses:
+        "200":
+          description: Get police station by id
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Crime'
+        "400":
+          description: Bad request
+        "401":
+          description: User not authorized
+        "403":
+          description: Access denied
+        "500":
+          description: Unexpected error
+securityDefinitions:
+  OAuth2:
+    type: oauth2
+    authorizationUrl: https://example.com/oauth/authorize
+    tokenUrl: https://example.com/oauth/token
+    flow: accessCode
+    scopes:
+      police: Grants read and write access
+      user: Grants write access
+definitions:
+  Crime:
+    type: object
+    required:
+    - date
+    - id
+    - name
+    - policeStationId
+    - rate
+    - status
+    - userId
+    properties:
+      id:
+        type: number
+        example: 8c5e5abf-f9fa-44ec-a2b8-17e99d49f2f6
+      userId:
+        type: number
+        example: 8c5e5abf-f9fa-44ec-a2b8-17e99d49f2c7
+      policeStationId:
+        type: number
+        example: 8c5e5abf-f9fa-44ec-a2b8-17e99d49f2p5
+      status:
+        type: string
+        example: active
+      name:
+        type: string
+        example: Car theft
+      date:
+        type: string
+        format: date-time
+        example: 2016-08-29T09:12:33.001Z
+      rate:
+        type: number
+        example: 8.0
+  Station:
+    type: object
+    required:
+    - id
+    - location
+    properties:
+      id:
+        type: number
+        example: 8c5e5abf-f9fa-44ec-a2b8-17e99d49f2p5
+      location:
+        type: string
+        example: Kiev, st. Freedom
