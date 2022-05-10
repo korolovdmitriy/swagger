@@ -193,7 +193,7 @@ paths:
           description: Access denied
         "500":
           description: Unexpected error
-  /policeStations/{id}/chek-crimes:
+  /police-stations/{id}/chek-crimes:
     get:
       tags:
       - Police stations
